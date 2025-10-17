@@ -69,3 +69,28 @@ for i in range(20):
 
     new_row = pd.DataFrame({'index': [i+1], 'score': [1 - dt.score(X_test, y_test)]})
     max_depth_scores = pd.concat([max_depth_scores, new_row])
+
+
+#create adaboost and collect scores for different numbers of classifiers
+clf = AdaBoost(n_learners=150, base=DecisionTreeClassifier(max_depth=1)).fit(X_train, y_train)
+scores = clf.staged_score(X_test, y_test)
+
+
+#plot adaboost staged scores
+plt.plot(scores)
+plt.title('Staged Score')
+plt.xlabel('Stumps')
+plt.ylabel('Classification error')
+plt.xticks([30, 60, 90, 120, 150])
+plt.show()
+
+
+#create random forest and determine score
+y=y.replace('<=50K', 1)
+y=y.replace('<=50K.', 1)
+y=y.replace('>50K', -1)
+y=y.replace('>50K.', -1)
+
+X_train, X_test, y_train, y_test = train_test_split(X_sample, y, test_size=0.2)
+rf = RandomForest(X_train, y_train, 100)
+print(rf.score(X_test, y_test))
